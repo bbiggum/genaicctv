@@ -1,8 +1,8 @@
 # Generative AI Camera Demo
 
-<img src="application.png" width="640px">
+<img src="demo.png" width="640px">
 
-## GenAI-Powered Image Analysis from Camera
+## GenAI-Powered Image Analysis from CCTV
 
 This project is a sample code published by AWS, of a demo showcasing combination of generative AI and computer vision technology for worker safety use cases for industries like manufacturing, construction or utility. The demo was originally exhibited at the EXPO booth in AWS re:Invent 2023 and AWS booth at the Hannover Messe 2024. This demo application can analyze image frames to describe their content, determine potential hazards, and assess whether workers are wearing proper personal protective equipment (PPE). By deploying this code, you can build an application similar to the original demo.
 
