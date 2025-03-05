@@ -1,6 +1,6 @@
 # Generative AI Camera Demo
 
-<img src="demo.png" width="640px">
+<img src="Demo.png" width="640px">
 
 ## GenAI-Powered Image Analysis from CCTV
 
