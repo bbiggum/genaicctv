@@ -6,7 +6,7 @@ const AppHeader = () => {
       <Box maxW="container.lg" mx="auto" px={8}>
         {/* <Link href="/" passHref> */}
         <Heading fontSize="1.5rem" color="white" fontWeight={'bold'}>
-          Smart Products and Services Demo
+          CCTV 안전 상황판
         </Heading>
         {/* </Link> */}
       </Box>

@@ -33,7 +33,7 @@ const captionApiEndpoint = `${apiEndpoint}/caption`;
 const cloudfrontUrl = process.env.NEXT_PUBLIC_CLOUDFRONT_URL ?? '';
 
 export default function Home() {
-  const [pollingInterval, setPollingInterval] = useState(3000);
+  const [pollingInterval, setPollingInterval] = useState(5000);
   const [isUpdated, setIsUpdated] = useState(true);
   const [caption, setCaption] = useState('');
   const [labels, setLabels] = useState<string[]>([]);
@@ -67,11 +67,11 @@ export default function Home() {
       // hazardous status indicator
       const classification = data['classification']['S'].trim();
       if (classification == '1') {
-        setIndicatorColor('red.500');
-        setIndicatorLabel('Status: Caution');
+        setIndicatorColor('orange.500');
+        setIndicatorLabel('Status: 위험');
       } else {
-        setIndicatorColor('gray.20');
-        setIndicatorLabel('Status: Normal');
+        setIndicatorColor('gray.30');
+        setIndicatorLabel('Status: 정상');
       }
       // set S3 URL
       const imageFileName = data['s3_location']['S'].split('/').slice(-1)[0];
@@ -114,7 +114,7 @@ export default function Home() {
         <Accordion allowToggle marginBottom={'1%'} defaultIndex={0}>
           <AccordionItem>
             <AccordionButton>
-              Control Panel
+              제어판
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel pb={4}>
@@ -122,7 +122,7 @@ export default function Home() {
                 <HStack spacing={4}>
                   <Box>
                     <FormControl display={'flex'} alignItems={'center'}>
-                      <FormLabel mb={0}>Update Data</FormLabel>
+                      <FormLabel mb={0}>자동 업데이트</FormLabel>
                       <Switch
                         isChecked={isUpdated}
                         onChange={handleSwitch}></Switch>
@@ -131,9 +131,9 @@ export default function Home() {
                   <Spacer></Spacer>
                   <Box w="300px">
                     <FormControl display={'flex'} alignItems={'center'}>
-                      <FormLabel mb={0}>Update Interval (ms): </FormLabel>
+                      <FormLabel mb={0}>업데이트 주기 (초): </FormLabel>
                       <NumberInput
-                        value={pollingInterval}
+                        value={pollingInterval/1000}
                         onChange={handleIntervalChange}>
                         <NumberInputField></NumberInputField>
                       </NumberInput>
@@ -193,11 +193,11 @@ function AnnotatedImage(props: AnnotatedImageProps) {
     <>
       <VStack>
         <Heading size={'lg'} alignItems={'center'}>
-          Captured Image with Object Detection
+          CCTV의 캡쳐 이미지를 통한 사고 감지
         </Heading>
         <Image
           src={props.s3Url}
-          alt="Captured Image with Object Detection"
+          alt="CCTV의 캡쳐 이미지를 통한 사고 감지"
           height={`${props.height}px`}></Image>
       </VStack>
     </>
@@ -217,7 +217,7 @@ function VisualChat(props: VisualChatProps) {
     <>
       <VStack>
         <Heading size={'lg'} alignItems={'center'}>
-          Image Description by Generative AI
+         생성형 AI를 활용한 사고 상황 설명
         </Heading>
         <Card
           variant={'filled'}
@@ -243,7 +243,7 @@ function VisualChat(props: VisualChatProps) {
           h={'400px'}
           overflowY={'auto'}>
           <Heading size={'md'} marginBottom={'10px'} alignItems={'left'}>
-            Scene Description:
+            상황 설명:
           </Heading>
           <Heading
             size={'md'}

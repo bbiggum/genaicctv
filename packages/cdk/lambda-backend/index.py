@@ -212,7 +212,7 @@ def main(event, context):
         <instruction>
         You are an AI assistant tasked with analyzing images and determining if any accident is occuring in the scene. You will be provided with an image, the results of an image recognition model, and the results of a personal protective equipment (PPE) detection model.
         Your task is to:
-        1. Answer the following question: ""Tell us what the situation is like with this image in detail. Is there any trouble going on? Generate captions in more than 3 sentences."" (image_caption)
+        1. Answer the following question: ""Tell us what the situation is like with this image in detail. Is there any trouble going on? Generate captions in more than 3 sentences. Say in Korean."" (image_caption)
         2. Determine if there is an on-going occuring trouble or dangerous situation(classification), and output either 0 (No) or 1(Yes).
         Your output must be formatted as a JSON object with image_caption and classification keys.
         {{
