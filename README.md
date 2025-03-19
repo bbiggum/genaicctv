@@ -1,4 +1,4 @@
-# Generative AI CCTV 안정상황판
+# Generative AI CCTV 안전상황판
 
 <img src="app.png" width="640px">
 
