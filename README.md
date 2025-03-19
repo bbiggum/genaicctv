@@ -1,90 +1,58 @@
 # Generative AI CCTV 안정상황판
-설치환경 : 스토리지 최소 150GB
 
+<img src="app.png" width="640px">
 
-<img src="Demo.png" width="640px">
+## 생성형AI를 활용한 CCTV 안전감지 및 스키장 대기 예상 시간 분석 서비스
 
-## GenAI-Powered Image Analysis from CCTV
+해당 프로젝트는 Amazon Bedrock, Rekognition 등을 활용하여 CCTV에서 송출된 이미지 프레임을 분석하여 위험, 정상인 상황을 분석합니다. 또한 위험 상황에서는 1에서 10까지의 척도를 기준으로 심각도를 함께 표시를 합니다. 
+특히 스키장 리프트 대기 CCTV의 이미지가 입력된 경우에는 예상 대기 시간을 함께 분석결과에 보여주는 데모 입니다. 
 
-This project is a sample code published by AWS, of a demo showcasing combination of generative AI and computer vision technology for worker safety use cases for industries like manufacturing, construction or utility. The demo was originally exhibited at the EXPO booth in AWS re:Invent 2023 and AWS booth at the Hannover Messe 2024. This demo application can analyze image frames to describe their content, determine potential hazards, and assess whether workers are wearing proper personal protective equipment (PPE). By deploying this code, you can build an application similar to the original demo.
-
-<img src="overview.png" width="640px">
-
-The cloud-based web application introduced in this project allows users to upload static images to an S3 bucket. These images are then analyzed by generative AI and Amazon Rekognition, with the results displayed on the screen. This enables users to gain insights into the situation in the image, safety hazard and concerns, and PPE compliance within the manufacturing environment.
+참고로 지난 AWS re:Invent 2023와 Hannover Messe 2024에서 시연되었던 프로젝트를 기반으로 용도에 맞춰 커스터마이징 하였습니다. 
 
 <img src="architecture.png" width="640px">
 
-
-The code is described in AWS CDK which allows user to deploy the application in automated manner onto your AWS Account.
-
-### Note
-The complete code consists of edge part and  cloud part. The edge part sends the still image to S3, in which certain objects are detected by simple ML and send the entire video stream to the cloud. As the initial version of this sample, only the cloud portion is available in this repository. The edge part along with live video streaming feature will be published at a later date, following verification of automated setup processes. 
+AWS CDK를 기반으로 환경을 구성할 수 있으며 본 프로젝트에서는 AWS IOT 서비스 범위는 제외한 실제 이미지를 처리하는 부분에 대해서만 구현하였습니다.
 
 
 
-## How to deploy
+## 설치방법
 
-### Prerequisites
+### 사전 요구 사항
 
-- Set up CDK on your local machine and in your AWS account. For more information, see: https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html
-- Set up Bedrock model access in the region you use with your AWS account. In this demo, you need to have an access to Anthropic Claude 3.5 Sonnet. For more information, see: https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html
+- IDE 환경에 AWD CDK를 설치가 필요하며 스토리지는 약 20GB 정도의 여유분이 있어야 합니다. - https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html
+- us-west-2 기준으로 Amazon Bedrock 모델 중 Anthropic Cluade 3.7 Sonnet 모델에 대한 활성화가 필요합니다. - https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html
 
-### Deployment
 
-1. Clone this repository and move to the root of this repository.
-2. Run the following commands to deploy CDK Stack.
+### 배포
+1. 해당 레포지터리를 클론하고 클론된 레포지터리의 루트로 이동합니다. 
+2. 아래의 명령어를 실행하여 CDK Stack을 배포합니다.
 
 ```
 $ npm ci
 $ npm run cdk:deploy
 ```
-Various resources will be created, two resources below are the key items, where XXXX/YYYY/ZZZZ is the id automatically generated at the deployment time : 
-- S3 bucket: mfgcamerademov2stack-edgeedgeimagesXXXX
-- Cloud Front URl: https://YYYY.cloudfront.net
 
-You can also refer to these resources in the CloudFormation stack named "MfgCameraDemoV2Stack".
-
-3. Create prompt entry like the example prompt in 'packages/cdk/table-item-sample/prompt-templates-sample.csv' to the DynamoDB table from AWS management console. Find a DynamoDB table named like "MfgCameraDemoV2Stack-BackendPromptTemplatesZZZZ", create records with prompt name like 'accident-en' as 'id' field and the prompt text as 'prompt' field.
-
-4. Set the default prompt id to the DynamoDB table from AWS management console. Refer to the sample data 'packages/cdk/table-item-sample/lambda-last-call-sample.csv'.  Find a DynamoDB table named like "MfgCameraDemoV2Stack-BackendLambdaLastCallZZZZ", create a record {id:prompt_id, prompt_id:accident-en}.
-
-### Assumptions
-
-- The sample asset will be deployed into a non-production environment for educational purposes only.
-- The intended user of the code is a developer of implementing computer vision plus genAI solution, who are familiar with AWS, and can deploy the project code using CDK with minimal guidance.
-- As this sample code does not include a method to put images inside the application, it is expected for the user to set up the S3 bucket with appropriate security configuration for the user and put the image to the bucket outside of the application.
-- While this application allows user to select prompts from DynamoDB records, it does not provide a way to add/remove/modify the records in the DynamoDB table. The user who deploys this code needs to be allowed to update the DynamoDB by external methods such as the management console.
+배포시에는 CloudFormation 스택이 생성이 되며 아래의 주요 리소스도 함께 생성이 됩니다. 
+- S3 bucket: genaicctvstack-backendedgeimagesbucketXXXX <- JPG/JPEG/PNG 등의 이미지 업로드 버킷
+- CloudFront URl: https://YYYY.cloudfront.net <- 로그인 페이지 및 대시보드 접속 주소
+- DynamoDB: GenAICCTVStack-BackendClassifications <- Claude 3.7 Sonnet 에서 생성된 이미지 캡션, Rekognition에서 분석된 PPE, Label, 위험/정상, 위험도 정보가 저장됨
 
 
-### How to use the web application
-
-1. Access the web application created at the step 2 in the deployment process. You will be guided to create a user account with your e-mail address.
-2. Put any jpeg image file into the S3 bucket created at the step 2 above. AS a procedure to upload image via AWS CLI, you can refer to the output of 'npm run cdk:deploy' like `GenAICameraDemoStack.BackendCfnOutputUploadImageToS3XXXXXXX`
-3. The image is analyzed and described by the pipeline in 8-12 seconds with HD (1280x720) resolution image.
-4. You can switch the prompt to change the behavior of the applications, by choosing "prompt" in the Control Panel. Note that changing prompt takes effect in the next timing of image analysis.
+### 주요 코드 설명
+- cdk/bin/lambda-backend/index.py 에 Bedrock model에 질의하는 prompt 및 분석 설정 부분이 있으며 참고 및 수정하시면 됩니다.
+- UI 관련한 부분은 ui/components/ui 내의 페이지를 수정하시면 됩니다. 
+- 해당 프로젝트는 비운영환경에서 배포하는 용도로 PoC에 목적이 있습니다.
 
 
-### Prompt Guidance
-Behavior of the image analysis is configured by the prompt to give to the LLM.  In the example prompt two use cases are supported.
+### 대시보드 웹 접근 방법
+1. CloudFront URL로 접근하여 회원가입하기, Email 입력 후, 인증코드 입력하여 본인인증하면 가입하기 <- Amazon Cognito 사용자풀, 사용자에서 멤버 확인 가능
+2. AWS Management Console - S3 Bucket에 CCTV 화면을 직접 Upload 하고 약 5초 정도 대기
+3. 분석된 이미지가 대시보드에 객체가 선택된 바운딩 박스와 함께 표시되며 위험도, 대기시간 등이 표시됩니다.
 
-- "accident"
-    - The scene in the image is described in natural language, as well as the indication if the worker in the images is in hazardous situation.
-- "ppe"
-    - The status of PPE (Personal Protective Equipment), such as face mask, safety vest for each person in the picture is extracted and reported in text.
 
-You can write any prompt to support new use cases or languages by adding DynamoDB records. Prompt text is a template string of Python language to which results from Amazon Rekognition is embedded when it is executed.
 
-#### Output Language
-The output language of example prompt is English. You can specify the output language in the "\<outputLanguage\>" tag in the prompt.
-
-### Customization
-
-#### Integration with live video streaming
-If you configured a stream from Kinesis Video Streams, you can configure the stream to generate still image periodically to S3. (See https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/images.html#gs-s3Delivery). It allows you to use live video stream as the input of this application.
-
-#### Improving latency
-
-The Claude 3 Sonnet model that this application is configured to work with is not very fast but it generates detailed description. You can switch the type of model to Haiku to reduce the latency, also decreasing resolution of input image will also improve the latency.
+### 참고 프로젝트
+- https://github.com/aws-samples/generative-ai-camera-demo?tab=readme-ov-file
 
 
 
