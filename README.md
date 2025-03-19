@@ -49,7 +49,16 @@ $ npm run cdk:deploy
 2. AWS Management Console - S3 Bucket에 CCTV 화면을 직접 Upload 하고 약 5초 정도 대기
 3. 분석된 이미지가 대시보드에 객체가 선택된 바운딩 박스와 함께 표시되며 위험도, 대기시간 등이 표시됩니다.
 
+### 문제 해결
+- 만일 설치하는 과정에서 CDK 관련 버전 에러가 발생할 수 있습니다. NCU 업그레이드 및 aws-cdk, cdk를 삭제 및 재설치 하시면 됩니다. 
+```
+$ npm install -g npm-check-updates
+$ ncu -u
+$ npm uninstall aws-cdk
+$ npm uninstall cdk
+$ npm install aws-cdk cdk --force
 
+```
 
 ### 참고 프로젝트
 - https://github.com/aws-samples/generative-ai-camera-demo?tab=readme-ov-file
