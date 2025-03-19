@@ -19,7 +19,7 @@ smr_client = boto3.client("sagemaker-runtime")
 rek_client = boto3.client('rekognition')
 bedrock_client = boto3.client('bedrock-runtime', region_name="us-west-2")
 ddb_client = boto3.client('dynamodb')
-i2t_model = "claude3"
+i2t_model = "claude3.7"
 
 
 def encode_image(img_file):
@@ -34,12 +34,12 @@ def run_inference(endpoint_name, inputs):
     )
     return response["Body"].read().decode('utf-8')
 
-def invoke_claude_multimodal(inputs, max_tokens_to_sample=1500): 
+def invoke_claude_multimodal(inputs, max_tokens_to_sample=4000):
     # get environment variable of BEDROCK_MODEL_NAME
     model_id = os.environ['BEDROCK_MODEL_NAME']
     print(model_id)
     system_prompt = "Answer the question below. The final output should be in the JSON format."
-    max_tokens = 1500
+    max_tokens = 4000
     user_message = {
             "role": "user",
             "content": [
@@ -205,26 +205,31 @@ def main(event, context):
                 'id': {'S': prompt_id}
             }).get('Item')['prompt']['S']
         print(prompt)
-
+        
     except:
         print('prompt not found. use default prompt')
         prompt = """
         <instruction>
-        You are an AI assistant tasked with analyzing images and determining if any accident is occuring in the scene. You will be provided with an image, the results of an image recognition model, and the results of a personal protective equipment (PPE) detection model.
-        Your task is to:
-        1. Answer the following question: ""Tell us what the situation is like with this image in detail. Is there any trouble going on? Generate captions in more than 3 sentences. Say in Korean."" (image_caption)
-        2. Determine if there is an on-going occuring trouble or dangerous situation(classification), and output either 0 (No) or 1(Yes).
-        Your output must be formatted as a JSON object with image_caption and classification keys.
+        당신은 AnyResort의 안전환경팀 담당자 입니다. CCTV에서 캡쳐된 이미지를 확인하고 사고 상황인지를 확인하고 결정해야 합니다. GenAI 모델을 통해 분석된 이미지를 제공 받을 것이고 거기에는 PPE(personal protective equipment) 감지 결과도 포함됩니다. 
+        당신의 해야 하는 일은 아래와 같습니다.
+        
+        1. 아래 질문에 대답해 주세요: "이미지에서 보이는 상황을 안전한지 여부를 확인하고 인원수도 포함하여 적어도 3개 이상의 문장으로 표현하고 위험한 상황이라면 위험도 level(1-10)을 포함하여 image caption을 생성해 주세요. 만일 스키장에서 리프트 대기하는 모습이면 한 번에 8명, 20초 간격으로 배정이 된다면 예상 대기 시간도 알려주세요. 답변은 한국어로 해 주세요." (image_caption)
+        2. 현재 문제 상황이나 위험한 상황이 진행되고 있으면 위험도가 5 이상인 경우는 위험하다고 결정해 주세요.(classification), 그리고 output은 0(No) 또는 1(Yes)로 설정해 주세요.
+        
+        해당 Output은 반드시 image_caption과 classification key, risk_level이 포함된 JSON object 형태로 생성되어야 합니다.
         {{
         ""image_caption"": ""<caption here>"",
         ""classification"": <0 or 1>
+        ""risk_level"": <1-10>
         }}
-        Please provide your analysis based on the given inputs.
+        
+        주어진 입력값을 기반으로 당신의 분석을 제공해 주세요.
+        
         </instruction>
         <rekognition_label>{rekognition_label}</rekognition_label>
         <rekognition_ppe>{rekognition_ppe}</rekognition_ppe>
-        <reference>When answering the question related to the position of the image, you can use tha fact that a value of 'Left' closer to 0.0 indicates the left side of the image, closer to 0.50 the middle, and closer to 1.0 the right side. And you can find the numbers of people in ""Number of Persons' of rekognition_ppe.</reference>
-        <outputRule>The final output should be by JSON and any other characters except JSON object is prohibited to output. </outputRule>
+        <reference>When answering the question related to the position of the image, you can use the fact that a value of 'Left' closer to 0.0 indicates the left side of the image, closer to 0.50 the middle, and closer to 1.0 the right side. And you can find the numbers of people in ""Number of Persons' of rekognition_ppe.</reference>
+        <outputRule>The final output should be by JSON and any other characters except JSON object is prohibited to output.</outputRule>
         """
     
     base64_string = encode_image(file_path)
@@ -237,9 +242,11 @@ def main(event, context):
         llm_result = json.loads(llm_result, strict = False)
         image_caption  = llm_result['image_caption']
         classification = llm_result['classification']
+        risk_level = llm_result['risk_level']
     except: # Except for the case the output of Claude wasn't in the JSON format
         image_caption  = "No description"
         classification = 0
+        risk_level = 0
     xray_recorder.end_subsegment()
     
     pattern = re.compile(r"<.*?>")
@@ -272,7 +279,8 @@ def main(event, context):
             'rekognition_ppe': {'S': str(rek_ppe)},
             's3_location': {'S': f's3://{bucket}/{key}'},
             'front_s3_location': {'S': front_s3_location},
-            'classification': {'S': str(classification)}
+            'classification': {'S': str(classification)},
+            'risk_level': {'S': str(risk_level)}
         }
     )    
 

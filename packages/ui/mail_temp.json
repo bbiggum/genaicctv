@@ -1,0 +1,7 @@
+{
+  "TemplateName": "BeautifulTemplate",
+  "TemplateContent": {
+    "Subject": "⚠️ 위험 상황 알림: {{situation}}",
+    "Html": "<html>\n  <head>\n    <style>\n      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n      .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n      h1 { color: #d9534f; }\n      .alert { background-color: #f2dede; border: 1px solid #ebccd1; padding: 15px; border-radius: 4px; }\n      .footer { margin-top: 20px; font-size: 12px; color: #777; }\n    </style>\n  </head>\n  <body>\n    <div class=\"container\">\n      <h1>⚠️ 위험 상황 알림</h1>\n      <div class=\"alert\">\n        <p><strong>상황 설명:</strong> {{description}}</p>\n      </div>\n      <p>발생 시간: {{time}}</p>\n      <p>위치: {{location}}</p>\n      <div class=\"footer\">\n        <p>이 메시지는 자동으로 생성되었습니다. 긴급 상황 시 즉시 대응해 주시기 바랍니다.</p>\n      </div>\n    </div>\n  </body>\n</html>"
+  }
+}

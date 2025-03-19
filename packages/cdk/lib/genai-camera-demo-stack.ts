@@ -11,7 +11,7 @@ export class GenAICameraDemoStack extends cdk.Stack {
     super(scope, id, props);
 
     const backend = new Backend(this, 'Backend', {
-      bedrockModelName: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+      bedrockModelName: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0', 
     });
     const cognito = new Cognito(this, 'Cognito', {});
     const bff = new Bff(this, 'BFF', {

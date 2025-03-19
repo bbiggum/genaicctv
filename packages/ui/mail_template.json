@@ -1,0 +1,8 @@
+{
+    "TemplateName": "notitemplate",
+    "TemplateContent": {
+        "Subject": "CCTV 위험 상황 알림",
+        "Text": "",
+        "Html": "test"
+    }
+}
