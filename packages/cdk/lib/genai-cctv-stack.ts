@@ -6,7 +6,7 @@ import { Cognito } from './constructs/cognito';
 import { Front } from './constructs/front';
 
 
-export class GenAICameraDemoStack extends cdk.Stack {
+export class GenAICCTVStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 

@@ -16,7 +16,7 @@ export class Cognito extends Construct {
       // SignUp
       selfSignUpEnabled: true, // Disable Self Sign Up
       userInvitation: {
-        emailSubject: 'GenAI Camera Demo User Registration',
+        emailSubject: 'GenAI CCTV User Registration',
         emailBody: 'Hello {username}, Your temporary password is {####}',
         smsMessage: 'Hello {username}, Your temporary password is {####}',
       },
@@ -37,7 +37,7 @@ export class Cognito extends Construct {
     });
 
     const appClient = userPool.addClient('Client',{
-      userPoolClientName: "GenAICamDemoClient",
+      userPoolClientName: "GenAICCTVClient",
       oAuth: {
           scopes: [
             OAuthScope.OPENID,
@@ -50,7 +50,7 @@ export class Cognito extends Construct {
 
     userPool.addDomain('CognitoDomain', {
       cognitoDomain: {
-        domainPrefix: `genai-camera-demo-${Aws.ACCOUNT_ID}`,
+        domainPrefix: `genai-cctv-${Aws.ACCOUNT_ID}`,
       },
     });
 
