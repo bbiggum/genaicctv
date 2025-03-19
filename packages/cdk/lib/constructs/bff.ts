@@ -76,7 +76,9 @@ export class Bff extends Construct {
       }
     );
 
-    const api = new HttpApi(this, 'HttpApi', {
+// apigate naming for genai-cctv
+    const api = new HttpApi(this, 'GenAICCCTVAPI', {
+      apiName: 'GenAICCTVAPI', 
       defaultAuthorizer: authorizer,
       corsPreflight: {
         allowHeaders: [
@@ -126,7 +128,7 @@ export class Bff extends Construct {
     new CfnOutput(this, 'CfnOutputApiEndpoint', {
       value: api.apiEndpoint,
       description: 'API Endpoint',
-      exportName: 'ApiEndpoint',
+      exportName: 'GenAICCTVAPI',
     });
 
     this.api = api;

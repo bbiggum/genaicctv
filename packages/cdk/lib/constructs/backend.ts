@@ -74,8 +74,8 @@ export class Backend extends Construct {
       removalPolicy: RemovalPolicy.DESTROY, // removes table on cdk destroy
     });
 
-    const lambdaFunction = new PythonFunction(this, 'rekFunction', {
-      functionName: 'RekFunction',
+    const lambdaFunction = new PythonFunction(this, 'GenAICCTVRekFunction', {
+      functionName: 'GenAICCTVRekFunction',
       runtime: Runtime.PYTHON_3_13,
       entry: 'lambda-backend',
       index: 'index.py',
