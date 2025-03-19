@@ -1,4 +1,6 @@
-# Generative AI Camera Demo
+# Generative AI CCTV 안정상황판
+설치환경 : 스토리지 최소 150GB
+
 
 <img src="Demo.png" width="640px">
 
